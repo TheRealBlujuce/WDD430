@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Contact } from '../contacts.model';
 
 @Component({
   selector: 'cms-contact-detail',
@@ -6,5 +7,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./contact-detail.component.css']
 })
 export class ContactDetailComponent {
+
+  @Input() contact: Contact;
+
 
 }

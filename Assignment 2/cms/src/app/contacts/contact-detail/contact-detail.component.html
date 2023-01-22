@@ -2,13 +2,13 @@
     <div class="panel-heading">
         <div class="row">
             <div class="col-xs-12">
-                <h1>Contact Name</h1>
+                <h1>{{contact.name}}</h1>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-12">
                 <div class="pull-left">
-                    <img src="" alr="" class="img-responsive">
+                    <img src={{contact.imageURL}} alr="" class="img-responsive">
                 </div>
                 <div class="pull-right" style="padding-right: 32px;">
                     <button class="btn btn-primary" style="margin: 2px;">Edit</button>
@@ -22,14 +22,14 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="pull-left" style="font-weight:700;">Email:</div>
-                <div class="pull-right" style="padding-right: 180px;">email goes here</div>
+                <div class="pull-left" style="padding-left: 6px;">{{contact.email}}</div>
             </div>
         </div>
         
         <div class="row">
             <div class="col-xs-12">
                 <div class="pull-left" style="font-weight:700;">Phone:</div>
-                <div class="pull-right" style="padding-right: 122px;">phone number goes here</div>
+                <div class="pull-left" style="padding-left: 6px;">{{contact.phone}}</div>
             </div>
         </div>
     </div>
