@@ -1,26 +1,34 @@
-import { Component, ElementRef, ViewChild, EventEmitter, Output } from '@angular/core';
-import { Message } from '../message-modal';
+import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Message } from '../message.modal';
+import { MessageService } from '../message.service';
 
 @Component({
   selector: 'cms-message-edit',
   templateUrl: './message-edit.component.html',
-  styleUrls: ['./message-edit.component.css']
+  styleUrls: ['./message-edit.component.css'],
+  providers: [MessageService]
 })
-export class MessageEditComponent {
+export class MessageEditComponent implements OnInit{
 
   @ViewChild('subRef') subjectRef: ElementRef;
   @ViewChild('msgRef') msgRef: ElementRef;
 
-  @Output() messageAdded = new EventEmitter<Message>();
+
   currentSender = "Will";
+
+  constructor(private messageService: MessageService) {}
+
+  ngOnInit() {
+      
+  }
 
   onSendMessage()
   {
     const newSubject = this.subjectRef.nativeElement.value;
     const newMsgText = this.msgRef.nativeElement.value;
 
-    const newMessage = new Message(6, newSubject, newMsgText, this.currentSender);
-    this.messageAdded.emit(newMessage);
+    const newMessage = new Message("1", newSubject, newMsgText, "1");
+    this.messageService.addMessage(newMessage);
 
   }
 
