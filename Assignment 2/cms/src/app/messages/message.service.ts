@@ -21,7 +21,7 @@ export class MessageService {
   getMessages(): Message[]
   {
 
-    return this.messages.slice();
+    return this.messages;
    
   }
 

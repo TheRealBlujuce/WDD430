@@ -11,9 +11,9 @@
                     <img src={{contact.imageURL}} alr="" class="img-responsive">
                 </div>
                 <div class="pull-right" style="padding-right: 32px;">
-                    <button class="btn btn-primary" style="margin: 2px;">Edit</button>
+                    <a (click)="onContactEdit()" class="btn btn-primary" style="margin: 2px;">Edit</a>
                   
-                    <button class="btn btn-danger" style="margin: 2px;">Delete</button>
+                    <a (click)="onDelete()" class="btn btn-danger" style="margin: 2px;">Delete</a>
                 </div>
             </div>
         </div>

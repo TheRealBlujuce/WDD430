@@ -7,10 +7,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
-  loadedFeature = 'contact';
 
-  onNavigate(newFeature: string){
-    this.loadedFeature = newFeature;
-    console.log(this.loadedFeature)
-  }
 }
