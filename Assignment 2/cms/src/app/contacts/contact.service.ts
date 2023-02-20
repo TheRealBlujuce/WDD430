@@ -1,7 +1,6 @@
 import { Injectable, Output, EventEmitter } from '@angular/core';
-
+import { Subject } from 'rxjs';
 import { Contact } from './contacts.model'
-
 import { MOCKCONTACTS } from './MOCKCONTACTS'
 
 @Injectable({
@@ -10,13 +9,15 @@ import { MOCKCONTACTS } from './MOCKCONTACTS'
 export class ContactService {
 
   contacts: Contact[];
+  maxContactID: number;
 
   @Output() selectedContact = new EventEmitter<Contact>();
-  @Output() contactsChangedEvent = new EventEmitter<Contact[]>();
+  @Output() contactsChangedEvent = new Subject<Contact[]>();
 
   constructor() 
   { 
     this.contacts = MOCKCONTACTS;
+    this.maxContactID = this.getMaxID();
   }
 
 
@@ -26,18 +27,6 @@ export class ContactService {
     return this.contacts;
    
   }
-
-  // getContact(id: string): Contact
-  // {
-  //   for (var i = 0; i < this.contacts.length; i++)
-  //   {
-  //     if (this.contacts[i].id == id)
-  //     {
-  //       return this.contacts[i];
-  //     }
-  //   }
-  //   return null;
-  // }
 
   getContact(id: string)
   {
@@ -53,7 +42,55 @@ export class ContactService {
        return;
     }
     this.contacts.splice(pos, 1);
-    this.contactsChangedEvent.emit(this.contacts.slice());
+    this.contactsChangedEvent.next(this.contacts.slice());
+  }
+  
+  addDocument(newContact: Contact) {
+
+    if (newContact == undefined || newContact == null)
+    {
+      return;
+    }
+        
+    this.maxContactID++;
+    newContact.id = this.maxContactID.toString();
+    this.contacts.push(newContact);
+    let contactsListClone = this.contacts.slice()
+    this.contactsChangedEvent.next(contactsListClone)
+  }
+  
+  updateDocument(originalContact: Contact, newContact: Contact) {
+  
+    if ( (originalContact || newContact) == undefined || (originalContact || newContact) == null)
+    {
+      return;
+    }
+  
+    let pos = this.contacts.indexOf(originalContact);
+    if (pos < 0)
+    {
+      return;
+    } 
+  
+    newContact.id = originalContact.id
+    this.contacts[pos] = newContact;
+    let contactsListClone = this.contacts.slice()
+    this.contactsChangedEvent.next(contactsListClone)
+  }
+  
+  getMaxID(): number {
+
+    let maxId = 0
+  
+    this.contacts.forEach(function(document){
+      let currentId = +document.id;
+      if (currentId > maxId)
+      {
+        maxId = currentId;
+      }
+    })
+        
+    return maxId
   }
   
 
