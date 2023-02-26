@@ -45,7 +45,7 @@ export class ContactService {
     this.contactsChangedEvent.next(this.contacts.slice());
   }
   
-  addDocument(newContact: Contact) {
+  addContact(newContact: Contact) {
 
     if (newContact == undefined || newContact == null)
     {
@@ -59,7 +59,7 @@ export class ContactService {
     this.contactsChangedEvent.next(contactsListClone)
   }
   
-  updateDocument(originalContact: Contact, newContact: Contact) {
+  updateContact(originalContact: Contact, newContact: Contact) {
   
     if ( (originalContact || newContact) == undefined || (originalContact || newContact) == null)
     {
