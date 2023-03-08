@@ -11,24 +11,26 @@ import { Subscription } from 'rxjs';
 })
 export class DocumentListComponent implements OnInit, OnDestroy{
 
-  documents: Document[];
+  documents: Document[] = [];
   private igChangedDoc: Subscription
   constructor(private documentService: DocumentService, private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.documents = this.documentService.getDocuments();
-
+    
+    this.documentService.getDocuments();
     this.igChangedDoc = this.documentService.documentChangedEvent
     .subscribe(
       (documents: Document[]) => {
         this.documents = documents;
       }
     )
+    
 
   }
 
   onSelectedDocument(document: Document)
   {
+    this.documentService.getDocuments();
     this.documentService.documentSelected.emit(document);
   }
 

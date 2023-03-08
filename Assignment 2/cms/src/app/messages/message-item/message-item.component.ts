@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ContactService } from '../../contacts/contact.service';
 import { Message } from '../message.modal';
 import { Contact } from '../../contacts/contacts.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'cms-message-item',
@@ -14,13 +15,23 @@ export class MessageItemComponent implements OnInit{
   @Input() message: Message;
 
   messageSender: string;
+  private gettingContact: Subscription;
 
   constructor(private contactService: ContactService){}
 
   ngOnInit()
   {
-    const contact: Contact = this.contactService.getContact(this.message.sender)
-    this.messageSender = contact.name;
+
+
+    this.gettingContact = this.contactService.contactsChangedEvent
+    .subscribe(
+      (contacts: Contact[]) => {
+        var getContact = this.message.sender;
+        const contactOfSender: Contact = contacts[getContact]
+        this.messageSender = contactOfSender.name;
+        
+      });
+
   }
 
 

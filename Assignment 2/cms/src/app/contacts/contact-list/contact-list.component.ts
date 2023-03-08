@@ -14,10 +14,11 @@ export class ContactListComponent implements OnInit, OnDestroy{
   contacts: Contact[];
   private igChangedCont: Subscription;
   constructor(private contactService: ContactService, private router: Router, private route: ActivatedRoute) {}
+  term: string;
 
   ngOnInit() {
-    this.contacts = this.contactService.getContacts();
 
+    this.contactService.getContacts();
     this.igChangedCont = this.contactService.contactsChangedEvent
     .subscribe(
       (contacts: Contact[]) => {
@@ -33,5 +34,11 @@ export class ContactListComponent implements OnInit, OnDestroy{
   ngOnDestroy() {
       this.igChangedCont.unsubscribe();
   }
+
+  search(value: string) {
+
+    this.term = value;
+    
+    }
 
 }
