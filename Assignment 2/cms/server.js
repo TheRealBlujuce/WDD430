@@ -1,10 +1,13 @@
 // Get dependencies
 var express = require('express');
+var mongoose = require('mongoose');
 var path = require('path');
 var http = require('http');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+
+const Contact = require('./src/app/server/modules/contact-schema');
 
 // import the routing file to handle the default (index) route
 var index = require('./src/app/server/routes/app');
@@ -14,6 +17,20 @@ var contactsRoutes = require('./src/app/server/routes/contacts');
 
 // ... ADD CODE TO IMPORT YOUR ROUTING FILES HERE ... 
 
+// Private MONGO API key for this project: aba90320-ef4d-4b31-939e-c6641a8ba016
+
+// establish a connection to the mongo database
+mongoose.connect('mongodb+srv://willmarda:Icu4MongoDBAtlas@maincluster.twrdd3f.mongodb.net/cms',
+   { useNewUrlParser: true }, (err, res) => {
+      if (err) {
+         console.log('Connection failed: ' + err);
+      }
+      else {
+         console.log('Connected to database!');
+      }
+   }
+);
+mongoose.set('strictQuery', true)
 var app = express(); // create an instance of express
 
 // Tell express to use the following parsers for POST data
@@ -51,6 +68,18 @@ app.use('/', index);
 // Tell express to map all other non-defined routes back to the index page
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist/cms/index.html'));
+});
+
+app.get('/contacts', (req, res) => {
+  Contact.find().then(contacts =>{
+    console.log(contacts)
+    res.status(200).json({
+      message: "contact found!",
+      contacts: contacts
+    }).catch(err =>{
+      console.log(err);
+    })
+  })
 });
 
 // Define the port address and tell express to use this port
