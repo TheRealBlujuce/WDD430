@@ -25,7 +25,7 @@ export class ContactService {
 
   getContacts()
   {
-    this.http.get("https://wdd430-b4295-default-rtdb.firebaseio.com/contacts.json")
+    this.http.get("http://localhost:3000/contacts")
       .subscribe( (contacts: Contact[]) => {
       this.contacts = contacts;
 

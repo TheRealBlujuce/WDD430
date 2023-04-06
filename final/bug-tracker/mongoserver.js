@@ -5,28 +5,27 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
-const firebase = require('firebase-admin');
-var serviceAccount = require("./firebase-service-auth.json");
+const mongoose = require('mongoose');
 const compression = require('compression')
 
-const config = {
+// Connect to MongoDB
+mongoose.connect('mongodb+srv://willmarda:Icu4MongoDBAtlas@maincluster.twrdd3f.mongodb.net/Bugs', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => {
+  console.log('Connected to MongoDB');
+}).catch((error) => {
+  console.log('MongoDB connection error', error);
+});
 
-  apiKey: "AIzaSyBK6-On6hJWOvkt246K06O9LU_zu_9UWtU",
-  authDomain: "wdd430-b4295.firebaseapp.com",
-  databaseURL: "https://wdd430-b4295-default-rtdb.firebaseio.com",
-  projectId: "wdd430-b4295",
-  storageBucket: "wdd430-b4295.appspot.com",
-  messagingSenderId: "288535704920",
-  appId: "1:288535704920:web:9909167c1a007006a7212d",
-  credential: firebase.credential.cert(serviceAccount),
+// Define the MongoDB schema and model
+const bugSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  severity: { type: String, required: true }
+});
 
-};
-
-firebase.initializeApp(config);
-const db = firebase.database();
-
-const bugsRef = db.ref('bugs');
-
+const Bug = mongoose.model('Bug', bugSchema);
 
 const app = express();
 app.use(compression())
@@ -55,30 +54,50 @@ app.get('*', (req, res) => {
 });
 
 app.get('/bugposts', (req, res) => {
-  bugsRef.once('value', (snapshot) => {
-    const bugs = snapshot.val();
-    res.json(bugs);
+  Bug.find({}, (error, bugs) => {
+    if (error) {
+      console.log('Error retrieving bugs:', error);
+      res.sendStatus(500);
+    } else {
+      res.json(bugs);
+    }
   });
 });
 
 app.post('/bugposts', (req, res) => {
-  const newBugRef = bugsRef.push();
-  newBugRef.set(req.body);
-  res.sendStatus(201);
+  const newBug = new Bug(req.body);
+  newBug.save((error, bug) => {
+    if (error) {
+      console.log('Error creating bug:', error);
+      res.sendStatus(500);
+    } else {
+      res.sendStatus(201);
+    }
+  });
 });
 
 app.put('/bugposts/:id', (req, res) => {
   const bugId = req.params.id;
-  const bugRef = db.ref(`bugs/${bugId}`);
-  bugRef.update(req.body);
-  res.sendStatus(200);
+  Bug.findByIdAndUpdate(bugId, req.body, (error, bug) => {
+    if (error) {
+      console.log('Error updating bug:', error);
+      res.sendStatus(500);
+    } else {
+      res.sendStatus(200);
+    }
+  });
 });
 
 app.delete('/bugposts/:id', (req, res) => {
   const bugId = req.params.id;
-  const bugRef = db.ref(`bugs/${bugId}`);
-  bugRef.remove();
-  res.sendStatus(200);
+  Bug.findByIdAndDelete(bugId, (error, bug) => {
+    if (error) {
+      console.log('Error deleting bug:', error);
+      res.sendStatus(500);
+    } else {
+      res.sendStatus(200);
+    }
+  });
 });
 
 // Define the port address and tell express to use this port
